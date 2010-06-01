@@ -1,19 +1,20 @@
+#!/usr/bin/env python
+# (C) Copyright 2010 Brandyn A. White
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 """
-(C) Copyright 2010 Brandyn A. White
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 Usage:
 python poly.py <image_dir> <poly_json>
 """
@@ -42,12 +43,11 @@ def mouse_event_probe(event, x, y, flags, param):
     print((event, events[event], (x, y), flags, param))
 
 
-
 class PolyAnnotator(object):
     def __init__(self, image_dir, poly_json_fn, num_points=4):
         self.win_name = 'Poly'
         cv.NamedWindow(self.win_name)
-        cv.SetMouseCallback(self.win_name, self.mouse_handler)#mouse_event_probe)#
+        cv.SetMouseCallback(self.win_name, self.mouse_handler)
         self.image_dir = image_dir
         self.poly_json_fn = poly_json_fn
         self.image_list = glob.glob(image_dir + '/*')
@@ -59,10 +59,11 @@ class PolyAnnotator(object):
         self.point_color_first = (255, 255, 0)
         self.point_color_other = (255, 0, 0)
         self.poly_color = (0, 0, 255)
-        with open(self.poly_json_fn, 'r') as fp:
-            self.polys_accepted = json.load(fp)
-        print(self.polys_accepted)
-        #self.polys_accepted = {}
+        try:
+            with open(self.poly_json_fn, 'r') as fp:
+                self.polys_accepted = json.load(fp)
+        except IOError:
+            self.polys_accepted = {}
         self.load_image()
 
     def load_image(self):
@@ -105,7 +106,9 @@ class PolyAnnotator(object):
 
     def display_commands(self):
         commands = '-> - Next Image\n' \
-            '<- - Prev Image\n'
+            '<- - Prev Image\n' \
+            'a - Accept active points\n'
+        print(commands)
 
     def refresh_clear(self):
         self.img = cv.CloneImage(self.img_orig)
@@ -139,22 +142,20 @@ class PolyAnnotator(object):
             self.refresh_clear()
 
     def run(self):
+        self.display_commands()
         while 1:
             user_key = cv.WaitKey(7)
-            if user_key != -1:
-                print(user_key)
             # Accept points
             if user_key == 97 and len(self.points) == self.num_points:
                 self.accept_points()
-            elif user_key == 98:
-                print(self.polys_accepted)
             elif user_key == 65361:
                 self.prev_image()
             elif user_key == 65363:
                 self.next_image()
 
+
 def _main(image_dir, poly_json):
-    PolyAnnotator(image_dir, poly_json).run()
+    PolyAnnotator(image_dir, poly_json, 4).run()
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
