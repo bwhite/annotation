@@ -19,8 +19,8 @@ Usage:
 python poly.py <image_dir> <poly_json>
 """
 
-__author__ =  'Brandyn A. White <bwhite@cs.umd.edu>'
-__version__=  '0.1'
+__author__ = 'Brandyn A. White <bwhite@cs.umd.edu>'
+__version__ = '0.1'
 __licence__ = 'GPL V3'
 
 import cv
@@ -137,7 +137,7 @@ class PolyAnnotator(object):
                 self.points.append((x, y))
                 if len(self.points) == self.num_points:
                     self.draw_poly(self.points)
-                self.refresh()                
+                self.refresh()
         elif event == cv.CV_EVENT_RBUTTONDOWN:
             self.refresh_clear()
 
