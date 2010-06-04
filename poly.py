@@ -21,7 +21,7 @@ python poly.py <image_dir> <poly_json>
 
 __author__ = 'Brandyn A. White <bwhite@cs.umd.edu>'
 __version__ = '0.1'
-__licence__ = 'GPL V3'
+__license__ = 'GPL V3'
 
 import cv
 import glob
