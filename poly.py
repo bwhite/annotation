@@ -155,7 +155,7 @@ class PolyAnnotator(object):
 
 
 def _main(image_dir, poly_json):
-    PolyAnnotator(image_dir, poly_json, 4).run()
+    PolyAnnotator(image_dir, poly_json, 3).run()
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
