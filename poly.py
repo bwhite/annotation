@@ -16,7 +16,7 @@
 
 """
 Usage:
-python poly.py <image_dir> <poly_json>
+python poly.py <image_dir> <poly_json> (num_points=3)
 """
 
 __author__ = 'Brandyn A. White <bwhite@cs.umd.edu>'
@@ -154,11 +154,11 @@ class PolyAnnotator(object):
                 self.next_image()
 
 
-def _main(image_dir, poly_json):
-    PolyAnnotator(image_dir, poly_json, 3).run()
+def _main(image_dir, poly_json, num_points=3):
+    PolyAnnotator(image_dir, poly_json, int(num_points)).run()
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print(__doc__)
         sys.exit(1)
-    _main(*sys.argv[1:3])
+    _main(*sys.argv[1:])

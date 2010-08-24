@@ -20,7 +20,7 @@ Given an optional filtered path, it will allow you to interactively remove
 samples by pressing the 'd' key
 
 Usage:
-python make_chips.py <poly_json> <chip_dir> (poly_filter_json)
+python make_positive_chips.py <poly_json> <chip_dir> (poly_filter_json)
 """
 
 __author__ = 'Brandyn A. White <bwhite@cs.umd.edu>'
@@ -71,10 +71,11 @@ def main(poly_json, chip_dir, poly_filter_json=None):
             h, w = coord_h_w(coord)
             heights.append(h)
             widths.append(w)
-    height = np.median(heights)
-    width = np.median(widths)
+    height = int(np.round(np.median(heights)))
+    width = int(np.round(np.median(widths)))
     chip_height = height
     chip_width = width
+    #print('height:[%f] width:[%f]' % (height, width))
     h = cv.CreateMat(2, 3, cv.CV_32F)
     chip_img = cv.CreateImage((chip_width, chip_height), cv.IPL_DEPTH_32F, 3)
     chip_img_out = cv.CreateImage((chip_width, chip_height), cv.IPL_DEPTH_8U, 3)
@@ -106,12 +107,13 @@ def main(poly_json, chip_dir, poly_filter_json=None):
                 coord_str = [','.join([str(y) for y in x]) for x in coord]
                 coord_fn = '_'.join(coord_str)
                 chip_fn_out = '%s/%s_%s' % (chip_dir, coord_fn, base_fn)
-                print(chip_fn_out)
+                #print(chip_fn_out)
                 cv.SaveImage(chip_fn_out, chip_img_out)
 
     if poly_filter_json:
         with open(poly_filter_json, 'w') as fp:
-            json.dump(j, fp)    
+            json.dump(j, fp)
+    return chip_height, chip_width
 
 
 if __name__ == '__main__':
